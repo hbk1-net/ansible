@@ -1,0 +1,7 @@
+# Ansible related files
+*.retry
+*.vault
+*.log
+
+/.vscode
+/group_vars/all.yaml

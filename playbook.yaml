@@ -1,0 +1,7 @@
+---
+- name: Initial Setup for service hosts
+  hosts: hosts
+  become: true
+  roles:
+    - role: common
+    - role: docker

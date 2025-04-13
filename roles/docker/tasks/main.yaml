@@ -1,0 +1,33 @@
+---
+- name: Add Docker repo
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docer-ce.repo
+
+- name: Install Docker packages
+  ansible.builtin.dnf:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+
+- name: Enable and start Docker service
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Add op_user to docker group
+  ansible.builtin.user:
+    name: "{{ op_user }}"
+    groups: docker
+    append: true
+
+- name: Set permissions for /var/run/docker.sock
+  ansible.builtin.file:
+    path: /var/run/docker.sock
+    mode: '0666'
+    state: file

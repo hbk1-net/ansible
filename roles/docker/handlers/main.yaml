@@ -1,0 +1,21 @@
+---
+# 現状使用していない
+- name: Update_packages
+  ansible.builtin.dnf:
+    name: '*'
+    state: latest
+- name: Add_op_user_to_docker_group
+  ansible.builtin.user:
+    name: "{{ op_user }}"
+    groups: docker
+    append: true
+- name: Enable_and_start_docker_service
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+- name: Set_permissions_to_/var/run/docker.sock
+  ansible.builtin.file:
+    path: /var/run/docker.sock
+    mode: '0666'
+    state: file

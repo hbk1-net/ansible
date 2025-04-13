@@ -1,0 +1,43 @@
+---
+- name: Ensure op_user user exists
+  ansible.builtin.user:
+    name: "{{ op_user }}"
+    password: "{{ op_user_password }}"
+    shell: /bin/bash
+
+- name: Add op_user to sudoers
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/"{{ op_user }}"
+    content: "{{ op_user }} ALL=(ALL) NOPASSWD:ALL\n"
+    mode: '0440'
+
+- name: Set timezone to Asia/Tokyo
+  community.general.timezone:
+    name: Asia/Tokyo
+
+- name: Set prompt style to .bashrc
+  ansible.builtin.lineinfile:
+    path: /home/{{ op_user }}/.bashrc
+    line: 'export PS1="\[\e[1;34m\]\u@\h:\w $ \[\e[m\]"'
+    state: present
+
+- name: Update all packages
+  ansible.builtin.dnf:
+    name: '*'
+    state: latest
+
+- name: Install common packages
+  ansible.builtin.dnf:
+    name:
+      - openssh-server
+      - bash-completion
+      - vim
+      - git
+      - dnf-command(config-manager)
+    state: present
+
+- name: Ensure SSH service is started and enabled
+  ansible.builtin.service:
+    name: sshd
+    state: started
+    enabled: true
