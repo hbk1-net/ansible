@@ -19,7 +19,8 @@
   ansible.builtin.lineinfile:
     path: /home/{{ op_user }}/.bashrc
     line: 'export PS1="\[\e[1;34m\]\u@\h:\w $ \[\e[m\]"'
-    state: present
+    create: true
+    mode: "0644"
 
 - name: Update all packages
   ansible.builtin.dnf:
