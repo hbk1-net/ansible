@@ -1,2 +1,3 @@
 op_user: "user"
 op_user_password: "{{ 'your_password' | password_hash('sha512') }}"
+op_user_ssh_key: "/path/to/your/pubkey"

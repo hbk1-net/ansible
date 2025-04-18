@@ -11,6 +11,12 @@
     content: "{{ op_user }} ALL=(ALL) NOPASSWD:ALL\n"
     mode: '0440'
 
+- name: Ensure public key is installed for op_user
+  ansible.posix.authorized_key:
+    user: "{{ op_user }}"
+    state: present
+    key: "{{ lookup('file', op_user_ssh_key) }}"
+
 - name: Set timezone to Asia/Tokyo
   community.general.timezone:
     name: Asia/Tokyo
