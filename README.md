@@ -13,6 +13,12 @@ target node のIPアドレスを指定します。
 ```
 $ ansible-galaxy collection install community.general
 ```
+group_vars/all.yaml を作成します。
+```
+$ cp group_vars/all.yaml.sample group_vars/all.yaml
+$ vi group_vars/all.yaml
+```
+
 ansible-playbook で実行します。
 ```
 # dry-run
