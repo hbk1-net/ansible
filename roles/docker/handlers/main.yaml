@@ -1,9 +1,9 @@
 ---
 # 現状使用していない
-- name: Update_packages
-  ansible.builtin.dnf:
-    name: '*'
-    state: latest
+# - name: Update_packages
+#   ansible.builtin.dnf:
+#     name: '*'
+#     state: latest
 - name: Add_op_user_to_docker_group
   ansible.builtin.user:
     name: "{{ op_user }}"

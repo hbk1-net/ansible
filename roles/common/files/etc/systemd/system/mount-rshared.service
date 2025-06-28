@@ -1,0 +1,16 @@
+###################################
+# THIS FILE IS MANAGED BY ANSIBLE #
+###################################
+
+[Unit]
+Description=Set mount propagation of / to rshared
+DefaultDependencies=no
+Before=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/mount --make-rshared /
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
