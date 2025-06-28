@@ -1,0 +1,21 @@
+- name: Set directory for node_exporter
+  ansible.builtin.file:
+    path: /var/service/node_exporter
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: Set node_exporter container compose.yaml
+  ansible.builtin.copy:
+    src: compose.yaml
+    dest: /var/service/node_exporter/compose.yaml
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: Start node_exporter container
+  community.docker.docker_compose_v2:
+    project_src: /var/service/node_exporter
+    state: present
+  when: not ansible_check_mode

@@ -22,6 +22,6 @@ $ vi group_vars/all.yaml
 ansible-playbook で実行します。
 ```
 # dry-run
-$ ansible-playbook -i inventory.ini playbook.yaml --check
-$ ansible-playbook -i inventory.ini playbook.yaml
+$ ansible-playbook -i inventory.ini playbook.yaml --check --diff -v
+$ ansible-playbook -i inventory.ini playbook.yaml --diff -v
 ```

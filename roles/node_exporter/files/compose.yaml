@@ -1,0 +1,16 @@
+###################################
+# THIS FILE IS MANAGED BY ANSIBLE #
+###################################
+---
+services:
+  node_exporter:
+    image: prom/node-exporter:latest
+    container_name: node_exporter
+    pid: host
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    volumes:
+      - '/:/host:ro,rslave'
+    command:
+      - '--path.rootfs=/host'
