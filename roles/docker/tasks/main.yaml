@@ -36,11 +36,18 @@
     state: file
   when: not ansible_check_mode
 
-- name: Set /etc/systemd/system/docker.service.d/override.conf
+- name: Makedir /etc/systemd/system/docker.service.d/
   ansible.builtin.file:
-    path: /etc/systemd/system/docker.service.d/override.conf
+    path: /etc/systemd/system/docker.service.d/
     mode: '0644'
-    state: file
+    state: directory
+
+- name: Set /etc/systemd/system/docker.service.d/override.conf
+  ansible.builtin.copy:
+    src: override.conf
+    dest: /etc/systemd/system/docker.service.d/override.conf
+    mode: '0644'
+  notify: Reload systemd daemon
 
 - name: Set /etc/docker/daemon.json
   ansible.builtin.template:
