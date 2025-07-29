@@ -3,16 +3,16 @@
     path: /var/service/node_exporter
     state: directory
     mode: '0755'
-    owner: root
-    group: root
+    owner: "{{ op_user }}"
+    group: "{{ op_user }}"
 
 - name: Set node_exporter container compose.yaml
   ansible.builtin.copy:
     src: compose.yaml
     dest: /var/service/node_exporter/compose.yaml
     mode: '0644'
-    owner: root
-    group: root
+    owner: "{{ op_user }}"
+    group: "{{ op_user }}"
 
 - name: Start node_exporter container
   community.docker.docker_compose_v2:
