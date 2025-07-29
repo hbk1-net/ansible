@@ -51,6 +51,14 @@
     state: started
     enabled: true
 
+- name: Make service directory
+  ansible.builtin.file:
+    path: /var/service
+    state: directory
+    mode: '0755'
+    owner: "{{ op_user }}"
+    group: "{{ op_user }}"
+
 # node_exporter がマウントする / を rshared にするタスク
 - name: Set systemd unit file to make / rshared
   become: true
@@ -68,3 +76,4 @@
     name: mount-rshared.service
     enabled: true
     state: started
+  when: not ansible_check_mode
