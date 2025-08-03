@@ -35,3 +35,39 @@
     mode: '0666'
     state: file
   when: not ansible_check_mode
+
+- name: Makedir /etc/systemd/system/docker.service.d/
+  ansible.builtin.file:
+    path: /etc/systemd/system/docker.service.d/
+    mode: '0644'
+    state: directory
+
+- name: Set /etc/systemd/system/docker.service.d/override.conf
+  ansible.builtin.copy:
+    src: override.conf
+    dest: /etc/systemd/system/docker.service.d/override.conf
+    mode: '0644'
+  notify: Reload systemd daemon
+
+- name: Set /etc/docker/daemon.json
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart docker.service
+
+- name: Makedir /etc/docker/certs.d/registry-hostname
+  ansible.builtin.file:
+    path: /etc/docker/certs.d/{{ item }}
+    state: directory
+    mode: '0644'
+  loop: "{{ docker_insecure_registry_hosts }}"
+
+- name: Set /etc/docker/certs.d/registry-hostname/server.crt
+  ansible.builtin.copy:
+    content: "{{ docker_self_signed_certificate }}"
+    dest: /etc/docker/certs.d/{{ item }}/server.crt
+    mode: '0644'
+  loop: "{{ docker_insecure_registry_hosts }}"

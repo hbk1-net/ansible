@@ -1,0 +1,4 @@
+{
+   "hosts": ["unix:///var/run/docker.sock", "tcp://{{ docker_host_ip }}:2375"],
+   "insecure-registries": {{ docker_insecure_registries | to_json }}
+}
