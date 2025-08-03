@@ -60,7 +60,7 @@
 
 - name: Makedir /etc/docker/certs.d/registry-hostname
   ansible.builtin.file:
-    path: /etc/docker/certs.d/"{{ item }}"
+    path: /etc/docker/certs.d/{{ item }}
     state: directory
     mode: '0644'
   loop: "{{ docker_insecure_registry_hosts }}"
@@ -68,6 +68,6 @@
 - name: Set /etc/docker/certs.d/registry-hostname/server.crt
   ansible.builtin.copy:
     content: "{{ docker_self_signed_certificate }}"
-    dest: /etc/docker/certs.d/"{{ item }}"/server.crt
+    dest: /etc/docker/certs.d/{{ item }}/server.crt
     mode: '0644'
   loop: "{{ docker_insecure_registry_hosts }}"
