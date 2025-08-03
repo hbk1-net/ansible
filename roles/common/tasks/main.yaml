@@ -59,6 +59,13 @@
     owner: "{{ op_user }}"
     group: "{{ op_user }}"
 
+- name: Make symlink to /var/service
+  ansible.builtin.file:
+    src: /var/service
+    dest: /home/{{ op_user }}/service
+    state: link
+  when: not ansible_check_mode
+
 # node_exporter がマウントする / を rshared にするタスク
 - name: Set systemd unit file to make / rshared
   become: true
