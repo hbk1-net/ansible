@@ -8,6 +8,7 @@
   ansible.builtin.service:
     name: docker.service
     state: restarted
+  when: not ansible_check_mode
 
 - name: Reload systemd daemon
   ansible.builtin.systemd:
