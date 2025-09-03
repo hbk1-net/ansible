@@ -7,8 +7,8 @@
 
 - name: Add op_user to sudoers
   ansible.builtin.copy:
-    dest: /etc/sudoers.d/"{{ op_user }}"
-    content: "{{ op_user }} ALL=(ALL) NOPASSWD:ALL\n"
+    dest: /etc/sudoers.d/{{ op_user }}
+    content: "{{ op_user }} ALL=(ALL) ALL\n"
     mode: '0440'
 
 - name: Ensure public key is installed for op_user
