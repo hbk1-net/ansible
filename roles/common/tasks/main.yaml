@@ -38,6 +38,7 @@
   ansible.builtin.dnf:
     name:
       - epel-release
+      - man
       - openssh-server
       - bash-completion
       - vim
@@ -45,6 +46,11 @@
       - dnf-command(config-manager)
       - wget
     state: present
+
+- name: Ensure the crb repository is enabled
+  community.general.dnf_config_manager:
+    name: crb
+    state: enabled
 
 - name: Ensure SSH service is started and enabled
   ansible.builtin.service:
