@@ -4,6 +4,5 @@
 *.log
 
 /.vscode
-/inventories/inventory.ini
 /inventories/group_vars
 /inventories/hosts
