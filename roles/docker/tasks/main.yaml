@@ -1,75 +1,14 @@
 ---
-- name: Add Docker repo
-  ansible.builtin.get_url:
-    url: https://download.docker.com/linux/centos/docker-ce.repo
-    dest: /etc/yum.repos.d/docker-ce.repo
-    mode: "0644"
+- name: Import docker-install-rhel.yaml for RHEL hosts.
+  ansible.builtin.import_tasks:
+    file: docker-install-rhel.yaml
+  when: ansible_facts['os_family'] == 'RedHat'
 
-- name: Install Docker packages
-  ansible.builtin.dnf:
-    name:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-      - docker-buildx-plugin
-      - docker-compose-plugin
-    state: present
-  when: not ansible_check_mode
+- name: Import docker-install-ubuntu.yaml for Ubuntu hosts.
+  ansible.builtin.import_tasks:
+    file: docker-install-ubuntu.yaml
+  when: ansible_facts['os_family'] == 'Debian'
 
-- name: Enable and start Docker service
-  ansible.builtin.service:
-    name: docker
-    state: started
-    enabled: true
-  when: not ansible_check_mode
-
-- name: Add op_user to docker group
-  ansible.builtin.user:
-    name: "{{ op_user }}"
-    groups: docker
-    append: true
-
-- name: Set permissions for /var/run/docker.sock
-  ansible.builtin.file:
-    path: /var/run/docker.sock
-    mode: '0666'
-    state: file
-  when: not ansible_check_mode
-
-- name: Makedir /etc/systemd/system/docker.service.d/
-  ansible.builtin.file:
-    path: /etc/systemd/system/docker.service.d/
-    mode: '0644'
-    state: directory
-
-- name: Set /etc/systemd/system/docker.service.d/override.conf
-  ansible.builtin.copy:
-    src: override.conf
-    dest: /etc/systemd/system/docker.service.d/override.conf
-    mode: '0644'
-  notify: Reload systemd daemon
-
-- name: Set /etc/docker/daemon.json
-  ansible.builtin.template:
-    src: daemon.json.j2
-    dest: /etc/docker/daemon.json
-    owner: root
-    group: root
-    mode: "0644"
-  notify:
-    - Reload systemd daemon
-    - Restart docker.service
-
-- name: Makedir /etc/docker/certs.d/registry-hostname
-  ansible.builtin.file:
-    path: /etc/docker/certs.d/{{ item }}
-    state: directory
-    mode: '0644'
-  loop: "{{ docker_insecure_registry_hosts }}"
-
-- name: Set /etc/docker/certs.d/registry-hostname/server.crt
-  ansible.builtin.copy:
-    content: "{{ docker_self_signed_certificate }}"
-    dest: /etc/docker/certs.d/{{ item }}/server.crt
-    mode: '0644'
-  loop: "{{ docker_insecure_registry_hosts }}"
+- name: Import docker-setting.yaml
+  ansible.builtin.import_tasks:
+    file: docker-setting.yaml

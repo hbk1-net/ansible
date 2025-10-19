@@ -4,6 +4,7 @@
 #   ansible.builtin.dnf:
 #     name: '*'
 #     state: latest
+
 - name: Restart docker.service
   ansible.builtin.service:
     name: docker.service
