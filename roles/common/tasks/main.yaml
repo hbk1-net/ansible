@@ -37,6 +37,7 @@
 - name: Install common packages
   ansible.builtin.dnf:
     name:
+      - epel-release
       - openssh-server
       - bash-completion
       - vim
