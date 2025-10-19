@@ -2,7 +2,7 @@
 *.retry
 *.vault
 *.log
-
+/.ansible
 /.vscode
 /inventories/group_vars
 /inventories/hosts

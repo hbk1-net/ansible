@@ -1,93 +1,14 @@
 ---
-- name: Ensure op_user user exists
-  ansible.builtin.user:
-    name: "{{ op_user }}"
-    password: "{{ op_user_password }}"
-    shell: /bin/bash
+- name: Import base.yaml
+  ansible.builtin.import_tasks:
+    file: base.yaml
 
-- name: Add op_user to sudoers
-  ansible.builtin.copy:
-    dest: /etc/sudoers.d/{{ op_user }}
-    content: "{{ op_user }} ALL=(ALL) ALL\n"
-    mode: '0440'
+- name: Import packages-rhel.yaml for RHEL hosts.
+  ansible.builtin.import_tasks:
+    file: packages-rhel.yaml
+  when: ansible_facts['os_family'] == 'RedHat'
 
-- name: Ensure public key is installed for op_user
-  ansible.posix.authorized_key:
-    user: "{{ op_user }}"
-    state: present
-    key: "{{ lookup('file', op_user_ssh_key) }}"
-  when: not ansible_check_mode
-- name: Set timezone to Asia/Tokyo
-  community.general.timezone:
-    name: Asia/Tokyo
-
-- name: Set prompt style to .bashrc
-  ansible.builtin.lineinfile:
-    path: /home/{{ op_user }}/.bashrc
-    line: 'export PS1="\[\e[1;34m\]\u@\h:\w $ \[\e[m\]"'
-    create: true
-    mode: "0644"
-
-# 時間かかりすぎるのでやらないことに
-# - name: Update all packages
-#   ansible.builtin.dnf:
-#     name: '*'
-#     state: latest
-
-- name: Install common packages
-  ansible.builtin.dnf:
-    name:
-      - epel-release
-      - man
-      - openssh-server
-      - bash-completion
-      - vim
-      - git
-      - dnf-command(config-manager)
-      - wget
-    state: present
-
-- name: Ensure the crb repository is enabled
-  community.general.dnf_config_manager:
-    name: crb
-    state: enabled
-
-- name: Ensure SSH service is started and enabled
-  ansible.builtin.service:
-    name: sshd
-    state: started
-    enabled: true
-
-- name: Make service directory
-  ansible.builtin.file:
-    path: /var/service
-    state: directory
-    mode: '0755'
-    owner: "{{ op_user }}"
-    group: "{{ op_user }}"
-
-- name: Make symlink to /var/service
-  ansible.builtin.file:
-    src: /var/service
-    dest: /home/{{ op_user }}/service
-    state: link
-  when: not ansible_check_mode
-
-# node_exporter がマウントする / を rshared にするタスク
-- name: Set systemd unit file to make / rshared
-  become: true
-  ansible.builtin.copy:
-    src: etc/systemd/system/mount-rshared.service
-    dest: /etc/systemd/system/mount-rshared.service
-    mode: '0644'
-    owner: root
-    group: root
-
-- name: Enable mount-rshared-service
-  become: true
-  ansible.builtin.systemd:
-    daemon-reload: true
-    name: mount-rshared.service
-    enabled: true
-    state: started
-  when: not ansible_check_mode
+- name: Import packages-ubuntu.yaml for Ubuntu hosts.
+  ansible.builtin.import_tasks:
+    file: packages-ubuntu.yaml
+  when: ansible_facts['os_family'] == "Debian"

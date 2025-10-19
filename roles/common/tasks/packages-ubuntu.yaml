@@ -1,0 +1,19 @@
+---
+- name: Install common packages for Ubuntu hosts
+  ansible.builtin.apt:
+    name:
+      - man
+      - openssh-server
+      - bash-completion
+      - vim
+      - git
+      - wget
+      - ca-certificates
+      - curl
+    state: present
+
+- name: Ensure SSH service is started and enabled
+  ansible.builtin.service:
+    name: ssh
+    state: started
+    enabled: true
